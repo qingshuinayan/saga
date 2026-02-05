@@ -1,0 +1,51 @@
+{# 可编辑系统提示词模板
+  此模板将数据库中的可编辑内容与固定的上下文注入逻辑结合
+  固定部分：上下文注入逻辑
+  可编辑部分：role_definition, profile, skills, rules, workflows, output_format
+#}
+{{ role_definition }}
+
+{% if profile %}
+{{ profile }}
+{% endif %}
+
+{% if skills %}
+## Skills
+
+{{ skills }}
+{% endif %}
+
+{% if rules %}
+## Rules
+
+{{ rules }}
+{% endif %}
+
+{% if workflows %}
+## Workflows
+
+{{ workflows }}
+{% endif %}
+
+{% if output_format %}
+## OutputFormat
+
+{{ output_format }}
+{% endif %}
+
+## Initialization
+{% if display_name %}
+作为{{ display_name }}，你必须遵守上述Rules{% if workflows %}，按照Workflows执行任务{% endif %}{% if output_format %}，并按照OutputFormat输出{% endif %}。
+{% else %}
+你必须遵守上述Rules{% if workflows %}，按照Workflows执行任务{% endif %}{% if output_format %}，并按照OutputFormat输出{% endif %}。
+{% endif %}
+
+{% if context %}
+# Context from Knowledge Base
+---
+以下是根据用户问题，从知识库中检索到的核心信息。请根据用户问题遵守上述Rules{% if workflows %}，按照Workflows执行任务{% endif %}。
+{{ context }}
+
+{% else %}
+请根据用户问题遵守上述Rules{% if workflows %}，按照Workflows执行任务{% endif %}。
+{% endif %}

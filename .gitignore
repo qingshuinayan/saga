@@ -1,0 +1,97 @@
+# Saga 项目 .gitignore
+
+# ====================
+# Python 相关
+# ====================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ====================
+# 虚拟环境
+# ====================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# ====================
+# IDE 相关
+# ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ====================
+# Streamlit 相关
+# ====================
+.streamlit/
+
+# ====================
+# Saga 项目特定
+# ====================
+# 本地数据目录（包含用户上传的文件、数据库、向量库）
+data/
+data/uploads/
+data/chroma_db/
+data/bm25_indices/
+data/mineru_output/
+data/backups/
+
+# 日志文件
+logs/
+*.log
+
+# 临时文件
+*.tmp
+*.bak
+*.cache
+
+# ====================
+# 敏感配置文件
+# ====================
+# config.yaml 包含真实 API Key，使用 config.yaml.example 作为模板
+config.yaml
+
+# ====================
+# 其他
+# ====================
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# 临时文件
+tmpclaude-*/
+nul

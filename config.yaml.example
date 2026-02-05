@@ -1,0 +1,362 @@
+app:
+  name: Saga 个人知识助手
+  version: 1.0.0
+  log_level: INFO
+paths:
+  data: data/
+  logs: logs/
+  database: data/saga.db
+  uploads: data/uploads/
+  chroma_db: data/chroma_db/
+  bm25_indices: data/bm25_indices/
+  backups: data/backups/
+llm_service:
+  active_mode: external
+  external:
+    chat:
+      slot_1:
+        enabled: true
+        priority: 1
+        provider: qwen
+        custom_provider_name: ''
+        base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+        api_key: sk-your-qwen-api-key-here
+        model_name: qwen-plus
+        display_name: Qwen Plus
+      slot_2:
+        enabled: false
+        priority: 2
+        provider: deepseek
+        custom_provider_name: ''
+        base_url: https://api.deepseek.com/v1
+        api_key: sk-your-deepseek-api-key-here
+        model_name: deepseek-chat
+        display_name: DeepSeek Chat (对比模型)
+    embedding:
+      slot_1:
+        enabled: true
+        priority: 1
+        active: true
+        provider: qwen
+        custom_provider_name: ''
+        base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+        api_key: sk-your-qwen-api-key-here
+        model_name: text-embedding-v3
+        display_name: Text Embedding V3
+        dimension: 1024
+        batch_size: 10
+      slot_2:
+        enabled: false
+        priority: 2
+        active: false
+        provider: deepseek
+        custom_provider_name: ''
+        base_url: https://api.deepseek.com/v1
+        api_key: sk-your-deepseek-api-key-here
+        model_name: deepseek-text-embedding
+        display_name: DeepSeek Embedding
+        dimension: 1024
+        batch_size: 10
+    reranker:
+      slot_1:
+        enabled: true
+        priority: 1
+        provider: qwen
+        custom_provider_name: ''
+        base_url: https://dashscope.aliyuncs.com/compatible-api/v1/reranks
+        api_key: sk-your-qwen-api-key-here
+        model_name: qwen3-rerank
+        display_name: qwen3-rerank
+        top_n: 10
+        weight: 0.6
+        batch_size: 10
+      slot_2:
+        enabled: false
+        priority: 2
+        provider: deepseek
+        custom_provider_name: ''
+        base_url: ''
+        api_key: sk-your-deepseek-api-key-here
+        model_name: ''
+        display_name: DeepSeek Reranker
+        top_n: 10
+        weight: 0.4
+    ocr:
+      slot_1:
+        enabled: true
+        priority: 1
+        provider: qwen
+        custom_provider_name: ''
+        base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+        api_key: sk-your-qwen-api-key-here
+        model_name: qwen-long
+        display_name: Qwen Long (长文档)
+        max_file_size: 100MB
+        supports_pdf: true
+        supports_image: true
+        dimension: 1536
+      slot_2:
+        enabled: false
+        priority: 2
+        provider: deepseek
+        custom_provider_name: ''
+        base_url: https://api.deepseek.com/v1
+        api_key: sk-your-deepseek-api-key-here
+        model_name: deepseek-chat
+        display_name: DeepSeek Chat (视觉)
+        max_file_size: 10MB
+        supports_pdf: false
+        supports_image: true
+  internal:
+    enabled: true
+    llm:
+      model: Qwen3-235B-thinking
+      url: https://your-internal-server/inference/v1
+      api_key: your-internal-api-key
+    embedding:
+      model: Qwen3-Embedding-8B
+      url: https://your-internal-server/embedding/v1
+      api_key: your-internal-api-key
+    reranker:
+      model: Qwen3-Reranker-8B
+      url: https://your-internal-server/reranker/v1
+      api_key: your-internal-api-key
+    ocr:
+      image_url: https://your-internal-server/ocr/image
+      pdf_url: https://your-internal-server/ocr/pdf
+      api_key: your-internal-api-key
+    mineru:
+      enabled: false
+      server_url: https://your-internal-server/mineru/
+      model_name: /path/to/mineru/model
+      output_dir: data/mineru_output/
+  local:
+    enabled: true
+    host: http://localhost:11434
+    chat_model: qwen3:0.6b
+    embedding_model: qwen3-embedding:0.6b
+    reranker_model: dengcao/Qwen3-Reranker-0.6B:Q8_0
+    ocr_model: qwen3-vl:2b
+conversation:
+  default_temperature: 0.3
+  default_top_p: 0.9
+  context_token_budget: 6000
+knowledge_base:
+  chunk_size: 1000
+  chunk_overlap: 150
+  top_k: 10
+  rerank_top_n: 3
+  enable_hyde: false
+  enable_agentic_rag: true
+  relevance_threshold: 1.2
+rag_parsing:
+  use_multimodal_for_parsing: true
+  use_mineru_for_pdf: false
+  parsing_timeout: 600
+provider_presets:
+  qwen:
+    name: 阿里通义千问
+    icon: 🔵
+    chat:
+      base_urls:
+      - https://dashscope.aliyuncs.com/compatible-mode/v1
+      models:
+        qwen-plus:
+          display_name: Qwen Plus
+          max_tokens: 32768
+          supports_streaming: true
+        qwen-turbo:
+          display_name: Qwen Turbo
+          max_tokens: 8192
+          supports_streaming: true
+    embedding:
+      base_urls:
+      - https://dashscope.aliyuncs.com/compatible-mode/v1
+      models:
+        text-embedding-v3:
+          display_name: Text Embedding V3
+          dimension: 1024
+          batch_size: 10
+    reranker:
+      base_urls:
+      - https://dashscope.aliyuncs.com/compatible-api/v1/reranks
+      models:
+        qwen3-rerank:
+          display_name: Qwen3 Reranker
+          top_n: 10
+    ocr:
+      base_urls:
+      - https://dashscope.aliyuncs.com/compatible-mode/v1
+      models:
+        qwen-long:
+          display_name: Qwen Long (长文档)
+          max_file_size: 100MB
+          supports_pdf: true
+          supports_image: true
+  deepseek:
+    name: DeepSeek
+    icon: 🟢
+    chat:
+      base_urls:
+      - https://api.deepseek.com/v1
+      models:
+        deepseek-chat:
+          display_name: DeepSeek Chat
+          max_tokens: 32768
+          supports_streaming: true
+    embedding:
+      base_urls:
+      - https://api.deepseek.com/v1
+      models:
+        deepseek-text-embedding:
+          display_name: DeepSeek Embedding
+          dimension: 1024
+          batch_size: 10
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls:
+      - https://api.deepseek.com/v1
+      models:
+        deepseek-chat:
+          display_name: DeepSeek Chat (视觉)
+          max_file_size: 10MB
+          supports_pdf: false
+          supports_image: true
+  openai:
+    name: OpenAI (GPT)
+    icon: 🔴
+    chat:
+      base_urls:
+      - https://api.openai.com/v1
+      models:
+        gpt-4o:
+          display_name: GPT-4o
+          max_tokens: 128000
+          supports_streaming: true
+        gpt-4o-mini:
+          display_name: GPT-4o Mini
+          max_tokens: 128000
+          supports_streaming: true
+    embedding:
+      base_urls:
+      - https://api.openai.com/v1
+      models:
+        text-embedding-3-small:
+          display_name: Text Embedding 3 Small
+          dimension: 1536
+          batch_size: 100
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls:
+      - https://api.openai.com/v1
+      models:
+        gpt-4o:
+          display_name: GPT-4o (视觉)
+          max_file_size: 10MB
+          supports_pdf: false
+          supports_image: true
+  anthropic:
+    name: Anthropic (Claude)
+    icon: 🟠
+    chat:
+      base_urls:
+      - https://api.anthropic.com/v1
+      models:
+        claude-3-5-sonnet-20241022:
+          display_name: Claude 3.5 Sonnet
+          max_tokens: 200000
+          supports_streaming: true
+    embedding:
+      base_urls: []
+      models: {}
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls: []
+      models: {}
+  google:
+    name: Google (Gemini)
+    icon: 🟡
+    chat:
+      base_urls:
+      - https://generativelanguage.googleapis.com/v1beta
+      models:
+        gemini-1.5-pro:
+          display_name: Gemini 1.5 Pro
+          max_tokens: 2000000
+          supports_streaming: true
+    embedding:
+      base_urls:
+      - https://generativelanguage.googleapis.com/v1beta
+      models:
+        text-embedding-004:
+          display_name: Text Embedding 004
+          dimension: 768
+          batch_size: 100
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls:
+      - https://generativelanguage.googleapis.com/v1beta
+      models:
+        gemini-pro-vision:
+          display_name: Gemini Pro Vision
+          max_file_size: 20MB
+          supports_pdf: true
+          supports_image: true
+  glm:
+    name: 智谱AI (GLM)
+    icon: 🟣
+    chat:
+      base_urls:
+      - https://open.bigmodel.cn/api/paas/v4
+      models:
+        glm-4-plus:
+          display_name: GLM-4 Plus
+          max_tokens: 128000
+          supports_streaming: true
+        glm-4-flash:
+          display_name: GLM-4 Flash
+          max_tokens: 128000
+          supports_streaming: true
+    embedding:
+      base_urls:
+      - https://open.bigmodel.cn/api/paas/v4
+      models:
+        embedding-3:
+          display_name: Embedding 3
+          dimension: 1024
+          batch_size: 10
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls:
+      - https://open.bigmodel.cn/api/paas/v4
+      models:
+        glm-4v-plus:
+          display_name: GLM-4V Plus (视觉)
+          max_file_size: 10MB
+          supports_pdf: false
+          supports_image: true
+  other:
+    name: 其他/自定义
+    icon: ⚪
+    chat:
+      base_urls: []
+      models: {}
+    embedding:
+      base_urls: []
+      models: {}
+    reranker:
+      base_urls: []
+      models: {}
+    ocr:
+      base_urls: []
+      models: {}
